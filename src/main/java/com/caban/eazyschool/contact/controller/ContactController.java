@@ -5,7 +5,6 @@ import com.caban.eazyschool.contact.service.ContactService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class ContactController {
@@ -21,8 +20,8 @@ public class ContactController {
         return "contact";
     }
 
-    @PostMapping( "/saveMsg")
-    public String saveMessage(Contact contact){
+    @PostMapping("/saveMsg")
+    public String saveMessage(Contact contact) {
         contactService.saveMessageDetails(contact);
         return "redirect:/contact";
     }
