@@ -17,7 +17,7 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/saveMsg"))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/dashboard").authenticated()
                         .requestMatchers("/", "/home").permitAll()
@@ -28,6 +28,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/about").permitAll()
                         .requestMatchers("/assets/**").permitAll()
                         .requestMatchers("/login").permitAll()
+                        .requestMatchers("/logout").permitAll()
                 )
                 .formLogin(loginConfigurer -> loginConfigurer.
                         loginPage("/login")
