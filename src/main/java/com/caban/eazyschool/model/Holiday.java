@@ -1,4 +1,4 @@
-package com.caban.eazyschool.holiday.model;
+package com.caban.eazyschool.model;
 
 import lombok.Data;
 

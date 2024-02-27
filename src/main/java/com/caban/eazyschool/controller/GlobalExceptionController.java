@@ -1,4 +1,4 @@
-package com.caban.eazyschool.exception;
+package com.caban.eazyschool.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;

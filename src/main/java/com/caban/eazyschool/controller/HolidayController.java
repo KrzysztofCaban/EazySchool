@@ -1,6 +1,6 @@
-package com.caban.eazyschool.holiday.controller;
+package com.caban.eazyschool.controller;
 
-import com.caban.eazyschool.holiday.model.Holiday;
+import com.caban.eazyschool.model.Holiday;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

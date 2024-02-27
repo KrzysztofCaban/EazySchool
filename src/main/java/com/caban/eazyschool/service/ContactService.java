@@ -1,6 +1,6 @@
-package com.caban.eazyschool.contact.service;
+package com.caban.eazyschool.service;
 
-import com.caban.eazyschool.contact.model.Contact;
+import com.caban.eazyschool.model.Contact;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 @Slf4j

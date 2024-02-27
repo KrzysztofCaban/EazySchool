@@ -1,4 +1,4 @@
-package com.caban.eazyschool.home.controller;
+package com.caban.eazyschool.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -1,7 +1,7 @@
-package com.caban.eazyschool.contact.controller;
+package com.caban.eazyschool.controller;
 
-import com.caban.eazyschool.contact.model.Contact;
-import com.caban.eazyschool.contact.service.ContactService;
+import com.caban.eazyschool.model.Contact;
+import com.caban.eazyschool.service.ContactService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;

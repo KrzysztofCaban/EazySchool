@@ -1,4 +1,4 @@
-package com.caban.eazyschool.contact.model;
+package com.caban.eazyschool.model;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
