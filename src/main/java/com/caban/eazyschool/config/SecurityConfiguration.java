@@ -1,5 +1,6 @@
 package com.caban.eazyschool.config;
 
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -17,9 +18,12 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/saveMsg"))
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/saveMsg")
+                        .ignoringRequestMatchers(PathRequest.toH2Console()))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/dashboard").authenticated()
+                        .requestMatchers("/displayMessages").hasRole("ADMIN")
+                        .requestMatchers("/closeMsg/**").hasRole("ADMIN")
                         .requestMatchers("/", "/home").permitAll()
                         .requestMatchers("/holidays", "/holidays/**").permitAll()
                         .requestMatchers("/contact").permitAll()
@@ -29,6 +33,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/assets/**").permitAll()
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/logout").permitAll()
+                        .requestMatchers(PathRequest.toH2Console()).permitAll()
                 )
                 .formLogin(loginConfigurer -> loginConfigurer.
                         loginPage("/login")
@@ -42,6 +47,8 @@ public class SecurityConfiguration {
                         .permitAll()
                 )
                 .httpBasic(Customizer.withDefaults());
+
+        httpSecurity.headers(header -> header.frameOptions(frame -> frame.disable()));
 
         return httpSecurity.build();
     }
