@@ -23,8 +23,6 @@ public class ContactService {
     public boolean saveMessageDetails(Contact contact) {
 
         contact.setStatus(String.valueOf(EazySchoolConstants.OPEN));
-        contact.setCreatedBy(String.valueOf(EazySchoolConstants.ANONYMOUS));
-        contact.setCreatedAt(LocalDateTime.now());
         Contact savedContact = contactRepository.save(contact);
 
         return savedContact.getContactId() > 0;
@@ -37,11 +35,9 @@ public class ContactService {
     public boolean updateMsgStatus(int contactId, String updatedBy) {
         Optional<Contact> contact = contactRepository.findById(contactId);
 
-        contact.ifPresent(contact1 -> {
-            contact1.setStatus(String.valueOf(EazySchoolConstants.CLOSE));
-            contact1.setUpdatedAt(LocalDateTime.now());
-            contact1.setUpdatedBy(updatedBy);
-        });
+        contact.ifPresent(contact1 ->
+            contact1.setStatus(String.valueOf(EazySchoolConstants.CLOSE))
+        );
 
         Contact savedContact = contactRepository.save(contact.get());
         return savedContact.getContactId() > 0;
