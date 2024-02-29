@@ -18,8 +18,7 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/saveMsg")
-                        .ignoringRequestMatchers(PathRequest.toH2Console()))
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/saveMsg"))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/dashboard").authenticated()
                         .requestMatchers("/displayMessages").hasRole("ADMIN")
@@ -33,7 +32,6 @@ public class SecurityConfiguration {
                         .requestMatchers("/assets/**").permitAll()
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/logout").permitAll()
-                        .requestMatchers(PathRequest.toH2Console()).permitAll()
                 )
                 .formLogin(loginConfigurer -> loginConfigurer.
                         loginPage("/login")
@@ -48,7 +46,6 @@ public class SecurityConfiguration {
                 )
                 .httpBasic(Customizer.withDefaults());
 
-        httpSecurity.headers(header -> header.frameOptions(frame -> frame.disable()));
 
         return httpSecurity.build();
     }
