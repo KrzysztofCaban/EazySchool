@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -19,23 +20,30 @@ public class ContactService {
         this.contactRepository = contactRepository;
     }
 
-    public boolean saveMessageDetails(Contact contact){
+    public boolean saveMessageDetails(Contact contact) {
 
         contact.setStatus(String.valueOf(EazySchoolConstants.OPEN));
         contact.setCreatedBy(String.valueOf(EazySchoolConstants.ANONYMOUS));
         contact.setCreatedAt(LocalDateTime.now());
-        int result = contactRepository.saveContactMsg(contact);
+        Contact savedContact = contactRepository.save(contact);
 
-        return result > 0;
+        return savedContact.getContactId() > 0;
     }
 
     public List<Contact> findMsgsWithOpenStatus() {
-        return contactRepository.findMsgsWithStatus(EazySchoolConstants.OPEN);
+        return contactRepository.findByStatus(String.valueOf(EazySchoolConstants.OPEN));
     }
 
-    public boolean updateMsgStatus(int contactId, String updatedBy){
-        int result = contactRepository.updateMsgStatus(contactId, String.valueOf(EazySchoolConstants.CLOSE), updatedBy);
+    public boolean updateMsgStatus(int contactId, String updatedBy) {
+        Optional<Contact> contact = contactRepository.findById(contactId);
 
-        return result > 0;
+        contact.ifPresent(contact1 -> {
+            contact1.setStatus(String.valueOf(EazySchoolConstants.CLOSE));
+            contact1.setUpdatedAt(LocalDateTime.now());
+            contact1.setUpdatedBy(updatedBy);
+        });
+
+        Contact savedContact = contactRepository.save(contact.get());
+        return savedContact.getContactId() > 0;
     }
 }
