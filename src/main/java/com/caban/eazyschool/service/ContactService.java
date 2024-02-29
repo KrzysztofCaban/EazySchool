@@ -29,14 +29,14 @@ public class ContactService {
     }
 
     public List<Contact> findMsgsWithOpenStatus() {
-        return contactRepository.findByStatus(String.valueOf(EazySchoolConstants.OPEN));
+        return contactRepository.findByStatus(EazySchoolConstants.OPEN);
     }
 
-    public boolean updateMsgStatus(int contactId, String updatedBy) {
+    public boolean updateMsgStatus(int contactId) {
         Optional<Contact> contact = contactRepository.findById(contactId);
 
         contact.ifPresent(contact1 ->
-            contact1.setStatus(String.valueOf(EazySchoolConstants.CLOSE))
+            contact1.setStatus(EazySchoolConstants.CLOSE)
         );
 
         Contact savedContact = contactRepository.save(contact.get());
