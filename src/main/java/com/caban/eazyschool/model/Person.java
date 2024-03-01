@@ -24,41 +24,41 @@ import lombok.Data;
                 message = "Email addresses do not match!"
         )
 })
-public class Person extends BaseEntity{
+public class Person extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "person_id")
     private int personId;
 
-    @NotBlank(message="Name must not be blank")
-    @Size(min=3, message="Name must be at least 3 characters long")
+    @NotBlank(message = "Name must not be blank")
+    @Size(min = 3, message = "Name must be at least 3 characters long")
     @Column(name = "name")
     private String name;
 
-    @NotBlank(message="Mobile number must not be blank")
-    @Pattern(regexp="(^$|[0-9]{9})",message = "Mobile number must be 9 digits")
+    @NotBlank(message = "Mobile number must not be blank")
+    @Pattern(regexp = "(^$|[0-9]{9})", message = "Mobile number must be 9 digits")
     @Column(name = "mobile_number")
     private String mobileNumber;
 
-    @NotBlank(message="Email must not be blank")
-    @Email(message = "Please provide a valid email address" )
+    @NotBlank(message = "Email must not be blank")
+    @Email(message = "Please provide a valid email address")
     @Column(name = "email")
     private String email;
 
-    @NotBlank(message="Confirm Email must not be blank")
-    @Email(message = "Please provide a valid confirm email address" )
+    @NotBlank(message = "Confirm Email must not be blank")
+    @Email(message = "Please provide a valid confirm email address")
     @Transient
     private String confirmEmail;
 
-    @NotBlank(message="Password must not be blank")
-    @Size(min=5, message="Password must be at least 5 characters long")
+    @NotBlank(message = "Password must not be blank")
+    @Size(min = 5, message = "Password must be at least 5 characters long")
     @PasswordValidator
     @Column(name = "pwd")
     private String pwd;
 
-    @NotBlank(message="Confirm Password must not be blank")
-    @Size(min=5, message="Confirm Password must be at least 5 characters long")
+    @NotBlank(message = "Confirm Password must not be blank")
+    @Size(min = 5, message = "Confirm Password must be at least 5 characters long")
     @Transient
     private String confirmPwd;
 
@@ -69,4 +69,17 @@ public class Person extends BaseEntity{
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id", referencedColumnName = "address_id", nullable = true)
     private Address address;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "class_id", nullable = true)
+    private EazyClass eazyClass;
+
+
+    public void signUpForClass(EazyClass eazyClass) {
+        this.eazyClass = eazyClass;
+    }
+
+    public void leaveClass() {
+        this.eazyClass = null;
+    }
 }

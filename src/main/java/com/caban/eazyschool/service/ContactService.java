@@ -5,8 +5,8 @@ import com.caban.eazyschool.model.Contact;
 import com.caban.eazyschool.repository.ContactRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +22,7 @@ public class ContactService {
 
     public boolean saveMessageDetails(Contact contact) {
 
-        contact.setStatus(String.valueOf(EazySchoolConstants.OPEN));
+        contact.setStatus(EazySchoolConstants.OPEN);
         Contact savedContact = contactRepository.save(contact);
 
         return savedContact.getContactId() > 0;
@@ -32,11 +32,12 @@ public class ContactService {
         return contactRepository.findByStatus(EazySchoolConstants.OPEN);
     }
 
+    @Transactional
     public boolean updateMsgStatus(int contactId) {
         Optional<Contact> contact = contactRepository.findById(contactId);
 
         contact.ifPresent(contact1 ->
-            contact1.setStatus(EazySchoolConstants.CLOSE)
+                contact1.setStatus(EazySchoolConstants.CLOSE)
         );
 
         Contact savedContact = contactRepository.save(contact.get());

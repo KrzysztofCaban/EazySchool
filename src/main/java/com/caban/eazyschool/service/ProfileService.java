@@ -4,6 +4,7 @@ import com.caban.eazyschool.model.Address;
 import com.caban.eazyschool.model.Person;
 import com.caban.eazyschool.model.Profile;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ProfileService {
@@ -30,12 +31,11 @@ public class ProfileService {
     }
 
     public Person updateProfile(Person person, Profile profile) {
-        System.out.println("PRZED: " +person);
 
         person.setName(profile.getName());
         person.setEmail(profile.getEmail());
         person.setMobileNumber(profile.getMobileNumber());
-        if(person.getAddress() ==null || !(person.getAddress().getAddressId()>0)){
+        if (person.getAddress() == null || !(person.getAddress().getAddressId() > 0)) {
             person.setAddress(new Address());
         }
         person.getAddress().setAddress1(profile.getAddress1());
@@ -43,8 +43,6 @@ public class ProfileService {
         person.getAddress().setCity(profile.getCity());
         person.getAddress().setState(profile.getState());
         person.getAddress().setZipCode(profile.getZipCode());
-
-        System.out.println("PO: " +person);
 
         return personService.updatePerson(person);
     }
