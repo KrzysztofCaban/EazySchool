@@ -21,6 +21,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/displayProfile").authenticated()
                         .requestMatchers("/updateProfile").authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/student/**").hasRole("STUDENT")
                         .requestMatchers("/", "/home").permitAll()
                         .requestMatchers("/holidays", "/holidays/**").permitAll()
                         .requestMatchers("/contact").permitAll()

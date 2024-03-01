@@ -1,6 +1,7 @@
 package com.caban.eazyschool.service;
 
 import com.caban.eazyschool.model.Contact;
+import com.caban.eazyschool.model.Courses;
 import com.caban.eazyschool.model.EazyClass;
 import com.caban.eazyschool.model.Person;
 import org.springframework.stereotype.Service;
@@ -14,11 +15,17 @@ public class AdminService {
     private final ContactService contactService;
     private final EazyClassService eazyClassService;
     private final PersonService personService;
+    private final CoursesService coursesService;
 
-    public AdminService(ContactService contactService, EazyClassService eazyClassService, PersonService personService) {
+
+    public AdminService(ContactService contactService,
+                        EazyClassService eazyClassService,
+                        PersonService personService,
+                        CoursesService coursesService) {
         this.contactService = contactService;
         this.eazyClassService = eazyClassService;
         this.personService = personService;
+        this.coursesService = coursesService;
     }
 
     public List<Contact> findMsgsWithOpenStatus() {
@@ -46,8 +53,7 @@ public class AdminService {
     public String addNewStudentToClass(EazyClass eazyClass, Person person) {
         Person personEntity = personService.findPersonByEmail(person.getEmail());
         if (personEntity == null || !(personEntity.getPersonId() > 0))
-            return "redirect:/admin/displayStudents?classId=" + eazyClass.getClassId()
-                    + "&error=true";
+            return "redirect:/admin/displayStudents?classId=" + eazyClass.getClassId() + "&error=true";
 
         personService.signUpForClass(personEntity, eazyClass);
         eazyClassService.addNewStudent(eazyClass, personEntity);
@@ -59,10 +65,36 @@ public class AdminService {
         return eazyClassService.findAllClasses();
     }
 
-    public EazyClass deleteStudentFromClass(EazyClass eazyClass, int personId) {
+    public void deleteStudentFromClass(EazyClass eazyClass, int personId) {
         personService.leaveClass(personId);
-        EazyClass eazyClassSaved = eazyClassService.deleteStudentFromClass(eazyClass, personId);
+        eazyClassService.deleteStudentFromClass(eazyClass, personId);
+    }
 
-        return eazyClassSaved;
+    public List<Courses> findAllCourses() {
+        return coursesService.findAllCourses();
+    }
+
+    public void addNewCourse(Courses course) {
+        coursesService.saveCourse(course);
+    }
+
+    public Optional<Courses> getCourseById(int id) {
+        return coursesService.findCourseById(id);
+    }
+
+    public String addNewStudentToCourse(Courses courses, Person person) {
+        Person personEntity = personService.findPersonByEmail(person.getEmail());
+        if (personEntity == null || !(personEntity.getPersonId() > 0))
+            return "redirect:/admin/viewStudents?id=" + courses.getCourseId() + "&error=true";
+
+        personService.signUpForCourse(personEntity, courses);
+        coursesService.addNewStudent(courses, personEntity);
+        return "redirect:/admin/viewStudents?id=" + courses.getCourseId();
+    }
+
+
+    public void deleteStudentFromCourse(Courses courses, int personId) {
+        personService.leaveCourse(personId, courses);
+        coursesService.deleteStudentFromCourse(courses, personId);
     }
 }

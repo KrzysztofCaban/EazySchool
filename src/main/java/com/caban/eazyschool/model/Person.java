@@ -9,6 +9,9 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Data
 @Entity
 @Table(name = "person")
@@ -74,6 +77,11 @@ public class Person extends BaseEntity {
     @JoinColumn(name = "class_id", nullable = true)
     private EazyClass eazyClass;
 
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JoinTable(name = "person_courses",
+            joinColumns = @JoinColumn(name = "person_id"),
+            inverseJoinColumns = @JoinColumn(name = "course_id"))
+    private Set<Courses> courses = new HashSet<>();
 
     public void signUpForClass(EazyClass eazyClass) {
         this.eazyClass = eazyClass;
@@ -81,5 +89,13 @@ public class Person extends BaseEntity {
 
     public void leaveClass() {
         this.eazyClass = null;
+    }
+
+    public void signUpForCourse(Courses course) {
+        this.courses.add(course);
+    }
+
+    public void leaveCourse(Courses course) {
+        this.courses.remove(course);
     }
 }

@@ -1,6 +1,7 @@
 package com.caban.eazyschool.service;
 
 import com.caban.eazyschool.constants.EazySchoolConstants;
+import com.caban.eazyschool.model.Courses;
 import com.caban.eazyschool.model.EazyClass;
 import com.caban.eazyschool.model.Person;
 import com.caban.eazyschool.model.Roles;
@@ -43,12 +44,15 @@ public class PersonService {
     public Person findPersonByEmail(String email) {
         return personRepository.findByEmail(email);
     }
+
     @Transactional
     public void leaveClass(int id) {
-        Person person = personRepository.findById(id).get();
-        person.leaveClass();
-        personRepository.save(person);
+        personRepository.findById(id).ifPresent(person -> {
+            person.leaveClass();
+            personRepository.save(person);
+        });
     }
+
     @Transactional
     public void signUpForClass(Person person, EazyClass eazyClass) {
         person.signUpForClass(eazyClass);
@@ -57,5 +61,20 @@ public class PersonService {
 
     public Person findPersonById(int id) {
         return personRepository.findById(id).get();
+    }
+
+    @Transactional
+    public void signUpForCourse(Person person, Courses courses) {
+        person.signUpForCourse(courses);
+        personRepository.save(person);
+    }
+
+    @Transactional
+    public void leaveCourse(int personId, Courses courses) {
+        personRepository.findById(personId).ifPresent(person -> {
+            person.leaveCourse(courses);
+            personRepository.save(person);
+        });
+
     }
 }

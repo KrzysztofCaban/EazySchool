@@ -1,6 +1,7 @@
 package com.caban.eazyschool.controller;
 
 import com.caban.eazyschool.model.Contact;
+import com.caban.eazyschool.model.Courses;
 import com.caban.eazyschool.model.EazyClass;
 import com.caban.eazyschool.model.Person;
 import com.caban.eazyschool.service.AdminService;
@@ -81,17 +82,74 @@ public class AdminController {
     public ModelAndView addStudent(Model model, @ModelAttribute("person") Person person, HttpSession session) {
         ModelAndView modelAndView = new ModelAndView();
         EazyClass eazyClass = (EazyClass) session.getAttribute("eazyClass");
-        String result = adminService.addNewStudentToClass(eazyClass, person);
-        modelAndView.setViewName(result);
+        String newPath = adminService.addNewStudentToClass(eazyClass, person);
+        modelAndView.setViewName(newPath);
         return modelAndView;
     }
 
     @GetMapping("/deleteStudent")
     public ModelAndView deleteStudent(Model model, @RequestParam int personId, HttpSession session) {
         EazyClass eazyClass = (EazyClass) session.getAttribute("eazyClass");
-        EazyClass eazyClassSaved = adminService.deleteStudentFromClass(eazyClass, personId);
+        adminService.deleteStudentFromClass(eazyClass, personId);
 
-        session.setAttribute("eazyClass", eazyClassSaved);
+        session.setAttribute("eazyClass", adminService.getClassById(eazyClass.getClassId()));
         return new ModelAndView("redirect:/admin/displayStudents?classId=" + eazyClass.getClassId());
+    }
+
+    @GetMapping("/displayCourses")
+    public ModelAndView displayCourses(Model model) {
+        List<Courses> courses = adminService.findAllCourses();
+        ModelAndView modelAndView = new ModelAndView("courses_secure");
+        modelAndView.addObject("courses",courses);
+        modelAndView.addObject("course", new Courses());
+        return modelAndView;
+    }
+
+    @PostMapping("/addNewCourse")
+    public ModelAndView addNewCourse(Model model, @ModelAttribute("course") Courses course) {
+        ModelAndView modelAndView = new ModelAndView();
+        adminService.addNewCourse(course);
+        modelAndView.setViewName("redirect:/admin/displayCourses");
+        return modelAndView;
+    }
+
+    @GetMapping("/viewStudents")
+    public ModelAndView viewStudents(Model model, @RequestParam int id
+            ,HttpSession session,@RequestParam(required = false) String error) {
+        String errorMessage = null;
+        ModelAndView modelAndView = new ModelAndView("course_students");
+        Optional<Courses> courses = adminService.getCourseById(id);
+        modelAndView.addObject("courses",courses.get());
+        modelAndView.addObject("person",new Person());
+        session.setAttribute("courses",courses.get());
+        if(error != null) {
+            errorMessage = "Invalid Email entered!!";
+            modelAndView.addObject("errorMessage", errorMessage);
+        }
+        return modelAndView;
+    }
+
+    @PostMapping("/addStudentToCourse")
+    public ModelAndView addStudentToCourse(Model model, @ModelAttribute("person") Person person,
+                                           HttpSession session) {
+        ModelAndView modelAndView = new ModelAndView();
+        Courses courses = (Courses) session.getAttribute("courses");
+        String newPath = adminService.addNewStudentToCourse(courses, person);
+
+        session.setAttribute("courses",adminService.getCourseById(courses.getCourseId()).get());
+        modelAndView.setViewName(newPath);
+        return modelAndView;
+    }
+
+    @GetMapping("/deleteStudentFromCourse")
+    public ModelAndView deleteStudentFromCourse(Model model, @RequestParam int personId,
+                                                HttpSession session) {
+        Courses courses = (Courses) session.getAttribute("courses");
+        adminService.deleteStudentFromCourse(courses, personId);
+
+        session.setAttribute("courses",adminService.getCourseById(courses.getCourseId()).get());
+        ModelAndView modelAndView = new
+                ModelAndView("redirect:/admin/viewStudents?id="+courses.getCourseId());
+        return modelAndView;
     }
 }

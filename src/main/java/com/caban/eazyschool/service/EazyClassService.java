@@ -33,11 +33,13 @@ public class EazyClassService {
 
     @Transactional
     public void deleteClassById(int id) {
-        Optional<EazyClass> eazyClass = eazyClassRepository.findById(id);
-        for (Person person : eazyClass.get().getPersons()) {
-            personService.leaveClass(person.getPersonId());
-        }
-        eazyClassRepository.deleteById(id);
+        eazyClassRepository.findById(id).ifPresent(eazyClass -> {
+            for (Person person : eazyClass.getPersons()) {
+                personService.leaveClass(person.getPersonId());
+            }
+            eazyClassRepository.deleteById(id);
+        });
+
     }
 
 
@@ -52,11 +54,11 @@ public class EazyClassService {
     }
 
     @Transactional
-    public EazyClass deleteStudentFromClass(EazyClass eazyClass, int personId) {
+    public void deleteStudentFromClass(EazyClass eazyClass, int personId) {
         Person person = personService.findPersonById(personId);
 
         eazyClass.deleteStudent(person);
 
-        return eazyClassRepository.save(eazyClass);
+        eazyClassRepository.save(eazyClass);
     }
 }
