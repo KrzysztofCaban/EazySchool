@@ -18,6 +18,8 @@ public class SecurityConfiguration {
                         .ignoringRequestMatchers("/public/**"))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/dashboard").authenticated()
+                        .requestMatchers("/displayProfile").authenticated()
+                        .requestMatchers("/updateProfile").authenticated()
                         .requestMatchers("/displayMessages").hasRole("ADMIN")
                         .requestMatchers("/closeMsg/**").hasRole("ADMIN")
                         .requestMatchers("/", "/home").permitAll()
@@ -30,6 +32,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/logout").permitAll()
                         .requestMatchers("/public/**").permitAll()
+
                 )
                 .formLogin(loginConfigurer -> loginConfigurer.
                         loginPage("/login")

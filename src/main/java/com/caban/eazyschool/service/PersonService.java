@@ -22,14 +22,21 @@ public class PersonService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public boolean savePerson(Person person) {
+    public Person savePerson(Person person) {
         Roles role = rolesService.findRoleByName(EazySchoolConstants.STUDENT_ROLE);
 
         person.setRoles(role);
         person.setPwd(passwordEncoder.encode(person.getPwd()));
 
-        person = personRepository.save(person);
+        return personRepository.save(person);
+    }
 
-        return person.getPersonId() > 0;
+    public Person updatePerson(Person person) {
+        System.out.println("SERVICE: " + person);
+        return personRepository.save(person);
+    }
+
+    public Person findPersonByEmail(String email) {
+        return personRepository.findByEmail(email);
     }
 }

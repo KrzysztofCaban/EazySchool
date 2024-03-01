@@ -1,5 +1,8 @@
 package com.caban.eazyschool.controller;
 
+import com.caban.eazyschool.model.Person;
+import com.caban.eazyschool.service.PersonService;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -10,11 +13,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class DashboardController {
 
-    @RequestMapping("/dashboard")
-    public String displayDashboard(Model model, Authentication authentication) {
-        model.addAttribute("username", authentication.getName());
-        model.addAttribute("roles", authentication.getAuthorities().toString());
+    private final PersonService personService;
 
+    public DashboardController(PersonService personService) {
+        this.personService = personService;
+    }
+
+    @RequestMapping("/dashboard")
+    public String displayDashboard(Model model, Authentication authentication, HttpSession session) {
+        Person person = personService.findPersonByEmail(authentication.getName());
+        model.addAttribute("username", person.getName());
+        model.addAttribute("roles", authentication.getAuthorities().toString());
+        session.setAttribute("loggedInPerson", person);
         return "dashboard";
     }
 }

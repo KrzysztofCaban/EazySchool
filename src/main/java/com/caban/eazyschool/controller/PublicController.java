@@ -34,8 +34,8 @@ public class PublicController {
         if (errors.hasErrors())
             return "register";
 
-        boolean isSaved = personService.savePerson(person);
-        if (isSaved)
+        Person savedPerson = personService.savePerson(person);
+        if (savedPerson.getPersonId() != 0)
             return "redirect:/login?register=true";
 
         return "register";
