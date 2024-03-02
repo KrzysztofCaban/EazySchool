@@ -24,7 +24,8 @@ public class ContactService {
 
     public boolean saveMessageDetails(Contact contact) {
 
-        contact.setStatus(EazySchoolConstants.OPEN);
+        if (contact.getContactId() == 0)
+            contact.setStatus(EazySchoolConstants.OPEN);
         Contact savedContact = contactRepository.save(contact);
 
         return savedContact.getContactId() > 0;
@@ -44,5 +45,21 @@ public class ContactService {
 
         Contact savedContact = contactRepository.save(contact.get());
         return savedContact.getContactId() > 0;
+    }
+
+    public List<Contact> findContactsByStatus(String status) {
+        return contactRepository.findByStatus(status);
+    }
+
+    public void deleteMessageById(int id) {
+        contactRepository.deleteById(id);
+    }
+
+    public Optional<Contact> findContactById(int contactId) {
+        return contactRepository.findById(contactId);
+    }
+
+    public void deleteMessage(Contact contact) {
+        contactRepository.delete(contact);
     }
 }
