@@ -4,6 +4,8 @@ import com.caban.eazyschool.constants.EazySchoolConstants;
 import com.caban.eazyschool.model.Contact;
 import com.caban.eazyschool.repository.ContactRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,8 +30,8 @@ public class ContactService {
         return savedContact.getContactId() > 0;
     }
 
-    public List<Contact> findMsgsWithOpenStatus() {
-        return contactRepository.findByStatus(EazySchoolConstants.OPEN);
+    public Page<Contact> findMsgsWithOpenStatus(PageRequest pageRequest) {
+        return contactRepository.findByStatus(EazySchoolConstants.OPEN, pageRequest);
     }
 
     @Transactional

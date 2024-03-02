@@ -4,6 +4,8 @@ import com.caban.eazyschool.model.Contact;
 import com.caban.eazyschool.model.Courses;
 import com.caban.eazyschool.model.EazyClass;
 import com.caban.eazyschool.model.Person;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,8 +30,8 @@ public class AdminService {
         this.coursesService = coursesService;
     }
 
-    public List<Contact> findMsgsWithOpenStatus() {
-        return contactService.findMsgsWithOpenStatus();
+    public Page<Contact> findMsgsWithOpenStatus(PageRequest pageRequest) {
+        return contactService.findMsgsWithOpenStatus(pageRequest);
     }
 
     public void updateMsgStatus(int contactId) {

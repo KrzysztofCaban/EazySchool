@@ -3,6 +3,7 @@ package com.caban.eazyschool.service;
 import com.caban.eazyschool.model.Courses;
 import com.caban.eazyschool.model.Person;
 import com.caban.eazyschool.repository.CoursesRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +23,8 @@ public class CoursesService {
     }
 
     public List<Courses> findAllCourses() {
-        return coursesRepository.findAll();
+//        return coursesRepository.findAllByOrderByName();
+        return coursesRepository.findAll(Sort.by("name").descending());
     }
 
     @Transactional

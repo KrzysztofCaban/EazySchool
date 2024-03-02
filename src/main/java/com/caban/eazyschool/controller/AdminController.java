@@ -6,6 +6,9 @@ import com.caban.eazyschool.model.EazyClass;
 import com.caban.eazyschool.model.Person;
 import com.caban.eazyschool.service.AdminService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,9 +27,25 @@ public class AdminController {
         this.adminService = adminService;
     }
 
-    @GetMapping("/displayMessages")
-    public ModelAndView displayMessages(Model model) {
-        List<Contact> contactMsgs = adminService.findMsgsWithOpenStatus();
+    @GetMapping("/displayMessages/page/{pageNum}")
+    public ModelAndView displayMessages(Model model,
+                                        @PathVariable(name = "pageNum") int pageNum,
+                                        @RequestParam("sortField") String sortField,
+                                        @RequestParam("sortDir") String sortDir) {
+        final PageRequest pageRequest = PageRequest.of(
+                pageNum - 1,
+                5,
+                sortDir.equals("asc") ? Sort.by(sortField).ascending() : Sort.by(sortField).descending());
+
+        Page<Contact> msgPage = adminService.findMsgsWithOpenStatus(pageRequest);
+        List<Contact> contactMsgs = msgPage.getContent();
+        model.addAttribute("currentPage", pageNum);
+        model.addAttribute("totalPages", msgPage.getTotalPages());
+        model.addAttribute("totalMsgs", msgPage.getTotalElements());
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
+
         ModelAndView modelAndView = new ModelAndView("messages");
         modelAndView.addObject("contactMsgs", contactMsgs);
         return modelAndView;
@@ -35,7 +54,7 @@ public class AdminController {
     @GetMapping("/closeMsg")
     public String closeMsg(@RequestParam int id) {
         adminService.updateMsgStatus(id);
-        return "redirect:/admin/displayMessages";
+        return "redirect:/admin/displayMessages/page/1?sortField=name&sortDir=desc";
     }
 
     @GetMapping("/displayClasses")
